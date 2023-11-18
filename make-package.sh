@@ -17,23 +17,27 @@ export SUMMARY="Postman is an API platform for building and using APIs."
 # prepare directories
 
 echo "intialize rpmbuild directories" 
-rpmbuild
+rpmdev-setuptree
 rm -rf $HOME/rpmbuild/SOURCES/$NAME-*.tar.gz
-rm -rf Postman.tar.gz
+rm -rf postman-*
 
 # download latest postman
 
-echo "download postman"
-curl $REALURL > Postman.tar.gz
-if [ $? -ne 0 ] ; then echo "something wrong with postman download!"; exit 1 ; fi
+ls Postman.tar.gz
+if [ $? -ne 0 ]
+then
+  echo "download postman"
+  curl $REALURL > Postman.tar.gz
+  if [ $? -ne 0 ] ; then echo "something wrong with postman download!"; exit 1 ; fi
+fi
 
 # we need to add the LICENSE file and rename the directory
 
 echo "Adding a LICENSE file"
-tar xvf Postman.tar.gz
+tar xf Postman.tar.gz
 cp LICENSE Postman
 mv Postman $NAME-$VERSION
-tar cvf $HOME/rpmbuild/SOURCES/$NAME-$VERSION.tar.gz $NAME-$VERSION
+tar cf $HOME/rpmbuild/SOURCES/$NAME-$VERSION.tar.gz $NAME-$VERSION LICENSE
 
 # set up the spec file
 
@@ -51,6 +55,7 @@ Source0:        $FAKEURL
 BuildRequires:  gzip tar
 Requires:       openssl
 
+
 %description
 What is Postman?
 Postman is an API platform for building and using APIs. Postman simplifies each step of the API lifecycle and streamlines collaboration so you can create better APIs—faster.
@@ -59,18 +64,21 @@ Easily store, catalog, and collaborate around all your API artifacts on one cent
 Tools
 The Postman platform includes a comprehensive set of tools that help accelerate the API lifecycle—from design, testing, documentation, and mocking to the sharing and discoverability of your APIs.
 
-%prep
-
 
 %build
+tar xvf $HOME/rpmbuild/SOURCES/$NAME-$VERSION.tar.gz
 
 
 %install
-install -m 0755 -d %{name} %{buildroot}/opt
+mkdir -p %{buildroot}/opt/$NAME
+mkdir -p %{buildroot}/usr/share/licenses/$NAME
+cp -R $HOME/rpmbuild/BUILD/$NAME-$VERSION/app %{buildroot}/opt/$NAME/app
+cp $HOME/rpmbuild/BUILD/$NAME-$VERSION/LICENSE %{buildroot}/usr/share/licenses/$NAME/LICENSE
+install -m 0755 $HOME/rpmbuild/BUILD/$NAME-$VERSION/Postman %{buildroot}/opt/$NAME/Postman
+
 
 %files
 %license LICENSE
-
 
 
 %changelog
@@ -81,5 +89,5 @@ EOF
 
 # package it
 
-echo "buyilding the package"
+echo "building the package"
 rpmbuild -bb $HOME/rpmbuild/SPECS/$NAME.spec

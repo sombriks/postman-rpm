@@ -1,6 +1,6 @@
 # Postman rpm script
 
-Script to proper package postman for linux. use at your own risk
+Script to proper download postman for linux. use at your own risk
 
 ## Requirements
 
@@ -16,14 +16,15 @@ Simply run:
 sh make-package.sh
 ```
 
-It will get latest postman .tar.gz file and wrap it for you. that's it.
+It will generate a rpm package to get latest postman .tar.gz file and wrap it
+for you. that's it.
 
 ## Why?
 
-Why not?
+Postman got too big, too heavy, rpm package creation simply fails.
 
-Anyways, Flatpak postman should be enough, but there is a nasty bug at the
-moment.
+Anyways, [Flatpak postman](https://flathub.org/pt-BR/apps/com.getpostman.Postman)
+should be enough, but there is a bug at the moment.
 
 ## Further reading
 
@@ -33,3 +34,4 @@ moment.
 - <https://benjamintoll.com/2023/07/06/on-creating-rpm-packages/>
 - <https://rpm-packaging-guide.github.io/>
 - <https://stackoverflow.com/questions/48337127/can-the-source0-in-a-rpm-spec-be-a-git-repo>
+- <https://www.cyberciti.biz/faq/howto-list-installed-rpm-package/>

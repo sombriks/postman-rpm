@@ -29,3 +29,7 @@ moment.
 
 - <https://www.redhat.com/sysadmin/create-rpm-package>
 - <https://github.com/postmanlabs/postman-app-support/issues/12330>
+- <https://www.baeldung.com/linux/date-command>
+- <https://benjamintoll.com/2023/07/06/on-creating-rpm-packages/>
+- <https://rpm-packaging-guide.github.io/>
+- <https://stackoverflow.com/questions/48337127/can-the-source0-in-a-rpm-spec-be-a-git-repo>

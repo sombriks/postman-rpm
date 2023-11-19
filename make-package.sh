@@ -81,7 +81,7 @@ cp Postman.desktop %{buildroot}/usr/share/applications/Postman.desktop
 cd /opt
 curl $REALURL > $NAME-$VERSION.tar.gz
 tar xvf $NAME-$VERSION.tar.gz
-
+chown root:root -R /opt/Postman
 
 
 %postun

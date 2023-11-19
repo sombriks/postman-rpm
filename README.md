@@ -1,11 +1,13 @@
 # [Postman rpm script](https://github.com/sombriks/postman-rpm)
 
-Script to crate a [RPM package](https://rpm.org) and proper download postman
-for linux. Use at your own risk.
+Script to create a [RPM package](https://rpm.org) and proper download postman
+for linux.
+
+Use at your own risk.
 
 ## Requirements
 
-- rpm dev tools
+- rpm dev tools (`sudo dnf install rpmdevtools`)
 - open ssl
 - curl
 
@@ -32,11 +34,14 @@ should be enough, but there is a bug at the moment.
 ## Tested environments
 
 - Fedora 39 KDE edition
+- Fedora 39 GNOME edition
 
 ## Known issues
 
 - By double-clicking the rpm file will open Discover properly and install nicely
   but uninstall fails. unsintall with `sudo dnf remove postman`  
+- This script is highly fragile to network errors, since it tries to download
+  official linux postman from official mirror, so pray for a good web connection
 
 ## Next steps
 

@@ -10,47 +10,48 @@ if [ $? -ne 0 ] ; then exit 1 ; fi
 export NAME=postman
 export VERSION="$(date +'%0Y.%0m%0d.%0H%0M%0S')"
 export REALURL=https://dl.pstmn.io/download/latest/linux_64
-export FAKEURL=https://dl.pstmn.io/download/latest/$NAME-$VERSION.tar.gz
 export RELEASE=1
-export SUMMARY="Postman is an API platform for building and using APIs."
+export ARCH=x86_64
 
 # prepare directories
 
 echo "intialize rpmbuild directories" 
+
 rpmdev-setuptree
 rm -rf $HOME/rpmbuild/SOURCES/$NAME-*.tar.gz
+rm -rf $HOME/rpmbuild/BUILDROOT/$NAME-*
 rm -rf postman-*
+rm -rf Postman.tar.gz
 
 # download latest postman
 
-ls Postman.tar.gz
-if [ $? -ne 0 ]
-then
-  echo "download postman"
-  curl $REALURL > Postman.tar.gz
-  if [ $? -ne 0 ] ; then echo "something wrong with postman download!"; exit 1 ; fi
-fi
+# ls Postman.tar.gz
+# if [ $? -ne 0 ]
+# then
+#   echo "download postman"
+#   curl $REALURL > Postman.tar.gz
+#   if [ $? -ne 0 ] ; then echo "something wrong with postman download!"; exit 1 ; fi
+# fi
 
-# we need to add the LICENSE file and rename the directory
+# provide some cosmetics and the LICENSE file
 
-echo "Adding a LICENSE file"
-tar xf Postman.tar.gz
-cp LICENSE Postman
-mv Postman $NAME-$VERSION
-tar cf $HOME/rpmbuild/SOURCES/$NAME-$VERSION.tar.gz $NAME-$VERSION LICENSE
+tar cvfz $NAME-$VERSION.tar.gz LICENSE Postman.desktop
+mv $NAME-$VERSION.tar.gz $HOME/rpmbuild/SOURCES/
 
 # set up the spec file
 
 echo "Generating $NAME.spec file"
+
 cat << EOF > $HOME/rpmbuild/SPECS/$NAME.spec
 Name:           $NAME
 Version:        $VERSION
 Release:        $RELEASE%{?dist}
-Summary:        $SUMMARY
+Group:          Development/Libraries
+Summary:        Postman is an API platform for building and using APIs.
 
 License:        Proprietary (with open source components)
 URL:            https://www.postman.com/product/what-is-postman/
-Source0:        $FAKEURL
+Source0:        $NAME-$VERSION.tar.gz
 
 BuildRequires:  gzip tar
 Requires:       openssl
@@ -66,19 +67,26 @@ The Postman platform includes a comprehensive set of tools that help accelerate 
 
 
 %build
-tar xvf $HOME/rpmbuild/SOURCES/$NAME-$VERSION.tar.gz
-
-
-%install
-mkdir -p %{buildroot}/opt/$NAME
-mkdir -p %{buildroot}/usr/share/licenses/$NAME
-cp -R $HOME/rpmbuild/BUILD/$NAME-$VERSION/app %{buildroot}/opt/$NAME/app
-cp $HOME/rpmbuild/BUILD/$NAME-$VERSION/LICENSE %{buildroot}/usr/share/licenses/$NAME/LICENSE
-install -m 0755 $HOME/rpmbuild/BUILD/$NAME-$VERSION/Postman %{buildroot}/opt/$NAME/Postman
+tar xvf %{_sourcedir}/$NAME-$VERSION.tar.gz
+mkdir -p %{buildroot}/usr/share/applications
+cp Postman.desktop %{buildroot}/usr/share/applications/Postman.desktop
 
 
 %files
 %license LICENSE
+%{_datadir}/applications/Postman.desktop
+
+
+%pre
+cd /opt
+curl $REALURL > $NAME-$VERSION.tar.gz
+tar xvf $NAME-$VERSION.tar.gz
+
+
+
+%postun
+cd /opt
+rm -rf Postman $NAME-$VERSION.tar.gz
 
 
 %changelog
@@ -90,4 +98,8 @@ EOF
 # package it
 
 echo "building the package"
+
 rpmbuild -bb $HOME/rpmbuild/SPECS/$NAME.spec
+cp $HOME/rpmbuild/RPMS/$ARCH/$NAME-$VERSION-$RELEASE.fc39.$ARCH.rpm .
+
+echo "package done"

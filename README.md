@@ -38,6 +38,11 @@ should be enough, but there is a bug at the moment.
 - By double-clicking the rpm file will open Discover properly and install nicely
   but uninstall fails. unsintall with `sudo dnf remove postman`  
 
+## Next steps
+
+None i hope, i want either an official app or get the nice Flatpak version
+working again, but it feels nice to proper install/uninstall things.
+
 ## Further reading
 
 - <https://www.redhat.com/sysadmin/create-rpm-package>

@@ -1,45 +1,53 @@
 #!/bin/env sh
 
-# some checks and variables
-
-curl --version
-if [ $? -ne 0 ] ; then exit 1 ; fi
-rpmbuild --version
-if [ $? -ne 0 ] ; then exit 1 ; fi
-
+# Define variables
 export NAME=postman
 export VERSION="$(date +'%0Y.%0m%0d.%0H%0M%0S')"
 export REALURL=https://dl.pstmn.io/download/latest/linux_64
 export RELEASE=1
 export ARCH=x86_64
 
-# prepare directories
+# Function to check if a command exists
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
 
-echo "intialize rpmbuild directories" 
+# Check for required commands
+if ! command_exists curl; then
+    echo "curl is not installed. Exiting."
+    exit 1
+fi
 
+if ! command_exists rpmbuild; then
+    echo "rpmbuild is not installed. Exiting."
+    exit 1
+fi
+
+# Initialize rpmbuild directories
+echo "Initializing rpmbuild directories"
 rpmdev-setuptree
+
+# Clean up old files
 rm -rf $HOME/rpmbuild/SOURCES/$NAME-*.tar.gz
 rm -rf $HOME/rpmbuild/BUILDROOT/$NAME-*
 rm -rf postman-*
 rm -rf Postman.tar.gz
 
-# download latest postman
+# Download latest Postman
+if [ ! -f Postman.tar.gz ]; then
+    echo "Downloading Postman"
+    curl $REALURL > Postman.tar.gz
+    if [ $? -ne 0 ]; then 
+        echo "Something went wrong with Postman download!"
+        exit 1
+    fi
+fi
 
-# ls Postman.tar.gz
-# if [ $? -ne 0 ]
-# then
-#   echo "download postman"
-#   curl $REALURL > Postman.tar.gz
-#   if [ $? -ne 0 ] ; then echo "something wrong with postman download!"; exit 1 ; fi
-# fi
-
-# provide some cosmetics and the LICENSE file
-
+# Provide some cosmetics and the LICENSE file
 tar cvfz $NAME-$VERSION.tar.gz LICENSE Postman.desktop
 mv $NAME-$VERSION.tar.gz $HOME/rpmbuild/SOURCES/
 
-# set up the spec file
-
+# Generate spec file
 echo "Generating $NAME.spec file"
 
 cat << EOF > $HOME/rpmbuild/SPECS/$NAME.spec
@@ -102,4 +110,4 @@ echo "building the package"
 rpmbuild -bb $HOME/rpmbuild/SPECS/$NAME.spec
 cp $HOME/rpmbuild/RPMS/$ARCH/$NAME-$VERSION-$RELEASE.fc39.$ARCH.rpm .
 
-echo "package done"
+echo "Package done"

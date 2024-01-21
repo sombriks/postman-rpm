@@ -1,0 +1,31 @@
+name: Postman Package Creation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container:
+      image: fedora:latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Update fedora
+        run: |
+          dnf upgrade -y
+
+      - name: Install dependencies
+        run: |
+          dnf install -y curl rpmdevtools rpm-build rpmlint
+
+      - name: Run script
+        run: |
+          chmod +x ./make-package.sh
+          ./make-package.sh

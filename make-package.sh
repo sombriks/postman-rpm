@@ -98,6 +98,9 @@ rm -rf Postman $NAME-$VERSION.tar.gz
 
 
 %changelog
+* Wed Jul 31 2024 Leonardo Silveira <sombriks@gmail.com>
+- believe or not i still need to do this
+
 * Sat Nov 18 2023 Leonardo Silveira <sombriks@gmail.com>
 - tooling for create an RPM package
 
@@ -108,7 +111,7 @@ EOF
 echo "building the package"
 
 rpmbuild -bb $HOME/rpmbuild/SPECS/$NAME.spec
-cp $HOME/rpmbuild/RPMS/$ARCH/$NAME-$VERSION-$RELEASE.fc39.$ARCH.rpm .
+cp $HOME/rpmbuild/RPMS/$ARCH/$NAME-$VERSION-$RELEASE.*.$ARCH.rpm .
 
-echo "PACKAGE_NAME=$NAME-$VERSION-$RELEASE.fc39.$ARCH.rpm" >> $GITHUB_OUTPUT
+echo "PACKAGE_NAME=$NAME-$VERSION-$RELEASE.*.$ARCH.rpm" >> $GITHUB_OUTPUT
 echo "Package done"

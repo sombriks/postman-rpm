@@ -1,10 +1,7 @@
 name: Postman Package Creation
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -15,7 +12,7 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Update fedora
         run: |
@@ -23,9 +20,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          dnf install -y curl rpmdevtools rpm-build rpmlint
+          dnf install -y @rpm-development-tools curl rpmdevtools rpm-build rpmlint
 
       - name: Run script
+        id: rpm-step
         run: |
           chmod +x ./make-package.sh
           ./make-package.sh
+      - name: Upload created package
+        uses: actions/upload-artifact@v4
+        with:
+          path: ${steps.rpm-step.outputs.PACKAGE_NAME}
+

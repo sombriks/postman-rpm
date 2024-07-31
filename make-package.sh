@@ -110,4 +110,5 @@ echo "building the package"
 rpmbuild -bb $HOME/rpmbuild/SPECS/$NAME.spec
 cp $HOME/rpmbuild/RPMS/$ARCH/$NAME-$VERSION-$RELEASE.fc39.$ARCH.rpm .
 
+echo "PACKAGE_NAME=$NAME-$VERSION-$RELEASE.fc39.$ARCH.rpm" >> $GITHUB_OUTPUT
 echo "Package done"

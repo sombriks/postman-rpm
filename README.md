@@ -38,6 +38,8 @@ should be enough, but there is a bug at the moment.
 
 ## Known issues
 
+- If you find youself unable to login (!!!) on postman app, try to disable 3D
+  acceleration in **Help > Disable Hardware Acceleration** menu.
 - By double-clicking the rpm file will open Discover properly and install nicely
   but uninstall fails. unsintall with `sudo dnf remove postman`  
 - This script is highly fragile to network errors, since it tries to download
